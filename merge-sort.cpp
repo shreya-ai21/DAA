@@ -1,66 +1,89 @@
-#include <iostream>
-#include <windows.h>
+// C++ program for Merge Sort
+#include <bits/stdc++.h>
 using namespace std;
 
-void merge(int arr[], int l, int mid, int r)
+// Merges two subarrays of array[].
+// First subarray is arr[begin..mid]
+// Second subarray is arr[mid+1..end]
+void merge(int array[], int const left, int const mid,
+		   int const right)
 {
-	int n1 = mid - l + 1;
-	int n2 = r - mid;
+	int const n1 = mid - left + 1;
+	int const n2 = right - mid;
 
-	int a[n1];
-	int b[n2];
+	// Create temp arrays
+	auto *a = new int[n1],
+		 *b = new int[n2];
 
-	for (int i = 0; i < n1; i++)
-	{
-		a[i] = arr[l + i];
-	}
-	for (int i = 0; i < n2; i++)
-	{
-		b[i] = arr[mid + 1 + i];
-	}
+	// Copy data to temp arrays a[] and b[]
+	for (auto i = 0; i < n1; i++)
+		a[i] = array[left + i];
+	for (auto j = 0; j < n2; j++)
+		b[j] = array[mid + 1 + j];
 
-	int i = 0, j = 0, k = 0;
+	auto i = 0, j = 0;
+	int k = left;
+
+	// Merge the temp arrays back into array[left..right]
 	while (i < n1 && j < n2)
 	{
-		if (a[i] < b[j])
+		if (a[i] <= b[j])
 		{
-			arr[k] = a[i];
-			k++;
+			array[k] = a[i];
 			i++;
 		}
-		else if (a[i] > b[j])
+		else
 		{
-			arr[k] = b[j];
-			k++;
+			array[k] = b[j];
 			j++;
 		}
+		k++;
 	}
+
+	// Copy the remaining elements of
+	// left[], if there are any
 	while (i < n1)
 	{
-		arr[k] = a[i];
-		k++;
+		array[k] = a[i];
 		i++;
+		k++;
 	}
+
+	// Copy the remaining elements of
+	// right[], if there are any
 	while (j < n2)
 	{
-		arr[k] = b[j];
-		k++;
+		array[k] = b[j];
 		j++;
+		k++;
 	}
+	delete[] a;
+	delete[] b;
 }
 
-void mergeSort(int arr[], int l, int r)
+// begin is for left index and end is right index
+// of the sub-array of arr to be sorted
+void mergeSort(int array[], int const begin, int const end)
 {
-	if (l < r)
-	{
-		int mid = (l + r) / 2;
-		mergeSort(arr, l, mid);
-		mergeSort(arr, mid + 1, r);
+	if (begin >= end)
+		return;
 
-		merge(arr, l, mid, r);
-	}
+	int mid = begin + (end - begin) / 2;
+	mergeSort(array, begin, mid);
+	mergeSort(array, mid + 1, end);
+	merge(array, begin, mid, end);
 }
 
+// UTILITY FUNCTIONS
+// Function to print an array
+void printArray(int A[], int size)
+{
+	for (int i = 0; i < size; i++)
+		cout << A[i] << " ";
+	cout << endl;
+}
+
+// Driver code
 int main()
 {
 	int n;
@@ -73,9 +96,16 @@ int main()
 	{
 		cin >> arr[i];
 	}
-	mergeSort(arr, l, n - 1);
-	for (int i = 0; i < n; i++)
-	{
-		cout << arr[i] << '\t';
-	}
+
+	cout << "Given array is \n";
+	printArray(arr, n);
+
+	mergeSort(arr, 0, n - 1);
+
+	cout << "\nSorted array is \n";
+	printArray(arr, n);
+	return 0;
 }
+
+// This code is contributed by Mayank Tyagi
+// This code was revised by Joshua Estes
