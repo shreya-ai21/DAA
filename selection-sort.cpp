@@ -1,53 +1,48 @@
-// C++ program for implementation of
-// selection sort
-#include <bits/stdc++.h>
+#include<iostream>
 using namespace std;
+int cnt;
 
-// Function for Selection sort
-void selectionSort(int arr[], int n)
-{
-	int i, j, min_idx;
-
-	// One by one move boundary of
-	// unsorted subarray
-	for (i = 0; i < n - 1; i++) {
-
-		// Find the minimum element in
-		// unsorted array
-		min_idx = i;
-		for (j = i + 1; j < n; j++) {
-			if (arr[j] < arr[min_idx])
-				min_idx = j;
-		}
-
-		// Swap the found minimum element
-		// with the first element
-		if (min_idx != i)
-			swap(arr[min_idx], arr[i]);
-	}
+void swapping(int &a, int &b) {         //swap the content of a and b
+   int temp;
+   temp = a;
+   a = b;
+   b = temp;
 }
 
-// Function to print an array
-void printArray(int arr[], int size)
-{
-	int i;
-	for (i = 0; i < size; i++) {
-		cout << arr[i] << " ";
-		cout << endl;
-	}
+void display(int *array, int size) {
+   for(int i = 0; i<size; i++)
+      cout << array[i] << " ";
+   cout << endl;
 }
 
-// Driver program
-int main()
-{
-	int n;
-	cout << "Enter number of elements:";
-	cin >> n;
-	int arr[n];
+void selectionSort(int *array, int size) {
+   int i, j, imin;
+   for(i = 0; i<size-1; i++) {
+      imin = i;   //get index of minimum data
+      for(j = i+1; j<size; j++){
+         cnt++;
+         if(array[j] < array[imin])
+         {
+             imin = j;
+         }
+           
+         swapping(array[i], array[imin]);
+      }
+         
+   }
+}
 
-	// Function Call
-	selectionSort(arr, n);
-	cout << "Sorted array: \n";
-	printArray(arr, n);
-	return 0;
+int main() {
+   int n;
+   cout << "Enter the number of elements: ";
+   cin >> n;
+   int arr[n];           //create an array with given number of elements
+   cout << "Enter elements:" << endl;
+   for(int i = 0; i<n; i++) {
+      cin >> arr[i];
+   }
+   selectionSort(arr, n);
+   cout << "Array after Sorting: ";
+   display(arr, n);
+   cout<<"Number of times basic operation is executed:"<<cnt;
 }
