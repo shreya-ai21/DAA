@@ -40,8 +40,10 @@ void printArray(int arr[], int size)
 // Driver program
 int main()
 {
-	int arr[] = { 64, 25, 12, 22, 11 };
-	int n = sizeof(arr) / sizeof(arr[0]);
+	int n;
+	cout << "Enter number of elements:";
+	cin >> n;
+	int arr[n];
 
 	// Function Call
 	selectionSort(arr, n);
