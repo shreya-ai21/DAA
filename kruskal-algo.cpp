@@ -8,7 +8,7 @@ using namespace std;
 #define edge pair<int, int>
 
 class Graph {
-   private:
+  private:
   vector<pair<int, edge> > G;  // graph
   vector<pair<int, edge> > T;  // mst
   int *parent;
@@ -21,6 +21,7 @@ class Graph {
   void kruskal();
   void print();
 };
+
 Graph::Graph(int V) {
   parent = new int[V];
 
@@ -32,6 +33,7 @@ Graph::Graph(int V) {
   G.clear();
   T.clear();
 }
+
 void Graph::AddWeightedEdge(int u, int v, int w) {
   G.push_back(make_pair(w, edge(u, v)));
 }

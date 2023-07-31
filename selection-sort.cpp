@@ -1,7 +1,9 @@
 // C++ program for implementation of
 // selection sort
 #include <bits/stdc++.h>
+#include<cstdlib>
 using namespace std;
+int cnt=0;
 
 // Function for Selection sort
 void selectionSort(int arr[], int n)
@@ -16,6 +18,7 @@ void selectionSort(int arr[], int n)
 		// unsorted array
 		min_idx = i;
 		for (j = i + 1; j < n; j++) {
+			cnt++;
 			if (arr[j] < arr[min_idx])
 				min_idx = j;
 		}
@@ -40,12 +43,22 @@ void printArray(int arr[], int size)
 // Driver program
 int main()
 {
-	int arr[] = { 64, 25, 12, 22, 11 };
-	int n = sizeof(arr) / sizeof(arr[0]);
+	int n;
+	cout << "Enter number of elements:";
+	cin >> n;
+	int arr[n];
+	int l = 0;
+	// cout << "Enter the elements:";
+	for (int i = 0; i < n; i++)
+	{
+		arr[i]=rand()%1000;
+	}
 
-	// Function Call
 	selectionSort(arr, n);
-	cout << "Sorted array: \n";
-	printArray(arr, n);
+	
+	// cout << "\nSorted array is \n";
+	// printArray(arr, n);
+
+	cout<<"Number of times basic operation is run: "<<cnt;
 	return 0;
 }

@@ -1,7 +1,8 @@
 // C++ program for Merge Sort
 #include <bits/stdc++.h>
+#include<cstdlib>
 using namespace std;
-
+int cnt=0;
 // Merges two subarrays of array[].
 // First subarray is arr[begin..mid]
 // Second subarray is arr[mid+1..end]
@@ -27,6 +28,7 @@ void merge(int array[], int const left, int const mid,
 	// Merge the temp arrays back into array[left..right]
 	while (i < n1 && j < n2)
 	{
+		cnt++;
 		if (a[i] <= b[j])
 		{
 			array[k] = a[i];
@@ -91,21 +93,17 @@ int main()
 	cin >> n;
 	int arr[n];
 	int l = 0;
-	cout << "Enter the elements:";
+	// cout << "Enter the elements:";
 	for (int i = 0; i < n; i++)
 	{
-		cin >> arr[i];
+		arr[i]=rand()%1000;
 	}
-
-	cout << "Given array is \n";
-	printArray(arr, n);
 
 	mergeSort(arr, 0, n - 1);
 
-	cout << "\nSorted array is \n";
-	printArray(arr, n);
+	// cout << "\nSorted array is \n";
+	// printArray(arr, n);
+
+	cout<<"Number of times basic operation is run: "<<cnt;
 	return 0;
 }
-
-// This code is contributed by Mayank Tyagi
-// This code was revised by Joshua Estes
