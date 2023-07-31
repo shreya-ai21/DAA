@@ -1,95 +1,118 @@
-// Kruskal's algorithm in C++
-
-#include <algorithm>
-#include <iostream>
-#include <vector>
+#include<bits/stdc++.h>
 using namespace std;
 
-#define edge pair<int, int>
-
-class Graph {
-  private:
-  vector<pair<int, edge> > G;  // graph
-  vector<pair<int, edge> > T;  // mst
-  int *parent;
-  int V;  // number of vertices/nodes in graph
-   public:
-  Graph(int V);
-  void AddWeightedEdge(int u, int v, int w);
-  int find_set(int i);
-  void union_set(int u, int v);
-  void kruskal();
-  void print();
+struct node {
+	int parent;
+	int rank;
+};
+struct Edge {
+	int src;
+	int dst;
+	int wt;
 };
 
-Graph::Graph(int V) {
-  parent = new int[V];
-
-  //i 0 1 2 3 4 5
-  //parent[i] 0 1 2 3 4 5
-  for (int i = 0; i < V; i++)
-    parent[i] = i;
-
-  G.clear();
-  T.clear();
+vector<node> dsuf;
+vector<Edge> mst;
+//FIND operation
+int find(int v)
+{
+	if(dsuf[v].parent==-1)
+		return v;
+	return dsuf[v].parent=find(dsuf[v].parent);	//Path Compression
 }
 
-void Graph::AddWeightedEdge(int u, int v, int w) {
-  G.push_back(make_pair(w, edge(u, v)));
-}
-int Graph::find_set(int i) {
-  // If i is the parent of itself
-  if (i == parent[i])
-    return i;
-  else
-    // Else if i is not the parent of itself
-    // Then i is not the representative of his set,
-    // so we recursively call Find on its parent
-    return find_set(parent[i]);
+void union_op(int fromP,int toP)
+{
+	//fromP = find(fromP);
+	//toP = find(toP);
+
+	//UNION by RANK
+	if(dsuf[fromP].rank > dsuf[toP].rank)	//fromP has higher rank
+		dsuf[toP].parent = fromP;
+	else if(dsuf[fromP].rank < dsuf[toP].rank)	//toP has higher rank
+		dsuf[fromP].parent = toP;
+	else
+	{
+		//Both have same rank and so anyone can be made as parent
+		dsuf[fromP].parent = toP;
+		dsuf[toP].rank +=1;		//Increase rank of parent
+	}
 }
 
-void Graph::union_set(int u, int v) {
-  parent[u] = parent[v];
+bool comparator(Edge a,Edge b)
+{
+	return a.wt < b.wt;
 }
-void Graph::kruskal() {
-  int i, uRep, vRep;
-  sort(G.begin(), G.end());  // increasing weight
-  for (i = 0; i < G.size(); i++) {
-    uRep = find_set(G[i].second.first);
-    vRep = find_set(G[i].second.second);
-    if (uRep != vRep) {
-      T.push_back(G[i]);  // add to tree
-      union_set(uRep, vRep);
-    }
-  }
+/*
+void printEdgeList(vector<Edge>& edge_List)
+{
+	for(auto p: edge_List)
+		cout<<"src: "<<p.src<<"  dst: "<<p.dst<<"  wt: "<<p.wt<<"\n";
+	cout<<"============================================================\n";
 }
-void Graph::print() {
-  cout << "Edge :"
-     << " Weight" << endl;
-  for (int i = 0; i < T.size(); i++) {
-    cout << T[i].second.first << " - " << T[i].second.second << " : "
-       << T[i].first;
-    cout << endl;
-  }
+*/
+void Kruskals(vector<Edge>& edge_List,int V,int E)
+{
+	//cout<<"edge_List before sort\n";
+	//printEdgeList(edge_List);
+	sort(edge_List.begin(),edge_List.end(),comparator);
+	//cout<<"edge_List after sort\n";
+	//printEdgeList(edge_List);
+
+	int i=0,j=0;
+	while(i<V-1 && j<E)
+	{
+		int fromP = find(edge_List[j].src);	//FIND absolute parent of subset
+		int toP = find(edge_List[j].dst);
+		
+		if(fromP == toP)
+		{	++j;	continue;	}
+
+		//UNION operation
+		union_op(fromP,toP);	//UNION of 2 sets
+		mst.push_back(edge_List[j]);
+		++i;
+	}
 }
-int main() {
-  Graph g(6);
-  g.AddWeightedEdge(0, 1, 4);
-  g.AddWeightedEdge(0, 2, 4);
-  g.AddWeightedEdge(1, 2, 2);
-  g.AddWeightedEdge(1, 0, 4);
-  g.AddWeightedEdge(2, 0, 4);
-  g.AddWeightedEdge(2, 1, 2);
-  g.AddWeightedEdge(2, 3, 3);
-  g.AddWeightedEdge(2, 5, 2);
-  g.AddWeightedEdge(2, 4, 4);
-  g.AddWeightedEdge(3, 2, 3);
-  g.AddWeightedEdge(3, 4, 3);
-  g.AddWeightedEdge(4, 2, 4);
-  g.AddWeightedEdge(4, 3, 3);
-  g.AddWeightedEdge(5, 2, 2);
-  g.AddWeightedEdge(5, 4, 3);
-  g.kruskal();
-  g.print();
-  return 0;
+//Display the formed MST
+void printMST(vector<Edge>& mst)
+{
+	cout<<"MST formed is\n";
+	for(auto p: mst)
+		cout<<"src: "<<p.src<<"  dst: "<<p.dst<<"  wt: "<<p.wt<<"\n";
 }
+
+int main()
+{
+	int E;	//No of edges
+	int V;	//No of vertices (0 to V-1)
+	cin>>E>>V;
+
+	dsuf.resize(V);	//Mark all vertices as separate subsets with only 1 element
+	for(int i=0;i<V;++i)	//Mark all nodes as independent set
+	{
+		dsuf[i].parent=-1;
+		dsuf[i].rank=0;
+	}
+
+	vector<Edge> edge_List;	//Adjacency list
+	Edge temp;
+	for(int i=0;i<E;++i)
+	{
+		int from,to,wt;
+		cin>>from>>to>>wt;
+		temp.src = from;
+		temp.dst = to;
+		temp.wt = wt;
+		edge_List.push_back(temp);
+	}
+
+	Kruskals(edge_List,V,E);
+	printMST(mst);
+	
+	return 0;
+}
+
+//TIME COMPLEXITY: O(ElogE + ElogV)
+//ElogE for sorting E edges in edge_list
+//ElogV for applying FIND & UNION operations
